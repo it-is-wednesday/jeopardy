@@ -17,7 +17,7 @@ import { read as readXLSX } from "./deps/xlsx.mjs";
  *     { title: 'topic3', questions: { '1': 'c', '2': 'f', '3': 'i' } }
  *   ]
  */
-function questionsInSheet(sheet) {
+function topicsInSheet(sheet) {
   const topics = {};
 
   // skip first element because it's the special value `!ref`
@@ -43,5 +43,5 @@ function questionsInSheet(sheet) {
 export function parseXlsx(uploadedXlsxFile) {
   const xlsx = readXLSX(uploadedXlsxFile);
   const firstSheet = Object.values(xlsx.Sheets)[0];
-  return questionsInSheet(firstSheet);
+  return topicsInSheet(firstSheet);
 }
