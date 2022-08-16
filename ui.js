@@ -48,6 +48,7 @@ const State = (topics) =>
       },
     ])
   );
+
 const Actions = (state) => ({
   burn: (topicId, difficulty) => console.log("dont forget to implement ;)"),
 });
@@ -58,14 +59,13 @@ const Topic = (actions, title, topicId, questions) => {
     const q = questions[questionDifficulty];
     return QuestionButton(actions, q.burnt, questionDifficulty, topicId);
   });
-  return m("div.topic", [m("div", title), ...buttons]);
+  return m("div.topic", [m("div.index-button.topic-title", title), ...buttons]);
 };
 
 const QuestionButton = (actions, burnt, difficulty, topicId) =>
   m(
-    "a",
+    "a.index-button.question",
     {
-      class: ["question"],
       href: `#!/q/${topicId}/${difficulty}`,
       onclick: () => actions.burn(topicId, difficulty),
     },

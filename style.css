@@ -1,0 +1,35 @@
+html {
+  font-family: Arial;
+  background-color: black;
+}
+
+.index {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.index .topic {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.index-button {
+  text-align: center;
+  background-color: #081277;
+  padding: 2rem;
+  text-decoration: none;
+  font-size: 2rem;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.topic-title {
+  color: white;
+}
+
+.question {
+  text-shadow: 5px 3px 2px black;
+  color: #d69f4c;
+}
