@@ -2,11 +2,18 @@ html {
   font-family: "Drugulin";
   background: url("assets/bg.png");
   background-size: cover;
+  height: 100%;
 }
 
 body {
   max-width: 50rem;
   margin: 0 auto;
+  height: 100%;
+
+  /* centering both vertically and horizontally! */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @font-face {
