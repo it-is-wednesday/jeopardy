@@ -8,7 +8,7 @@ export const IndexPage = (topics) => () => {
     view() {
       return m(
         "div.index",
-        Object.entries(state).map(([topicId, topic]) =>
+        ...Object.entries(state).map(([topicId, topic]) =>
           Topic(actions, topic.title, topicId, topic.questions)
         )
       );
@@ -18,8 +18,11 @@ export const IndexPage = (topics) => () => {
 
 export const QuestionPage = (topics) => ({
   view(vnode) {
-    console.log(topics[vnode.attrs.topicId]);
-    return m("div", topics[vnode.attrs.topicId].questions[vnode.attrs.difficulty]);
+    const topic = topics[vnode.attrs.topicId];
+    return m("div.question-page", [
+      m("div.question-page-topic-title", topic.title),
+      m("div.question-title", topic.questions[vnode.attrs.difficulty]),
+    ]);
   },
 });
 
@@ -59,7 +62,11 @@ const Topic = (actions, title, topicId, questions) => {
     const q = questions[questionDifficulty];
     return QuestionButton(actions, q.burnt, questionDifficulty, topicId);
   });
-  return m("div.topic", [m("div.index-button.topic-title", title), ...buttons]);
+
+  return [
+    m("div.index-button.index-page-topic-title", title),
+    ...buttons,
+  ];
 };
 
 const QuestionButton = (actions, burnt, difficulty, topicId) =>

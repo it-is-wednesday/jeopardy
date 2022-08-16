@@ -1,35 +1,54 @@
 html {
-  font-family: Arial;
-  background-color: black;
+  font-family: "Drugulin";
+  background: url("assets/bg.png");
+  background-size: cover;
+}
+
+body {
+  max-width: 50rem;
+  margin: 0 auto;
+}
+
+@font-face {
+  font-family: "Drugulin";
+  src: url("assets/font/drugulinclm-bold-webfont.ttf"),
+    url("assets/font/drugulinclm-bold-webfont.woff") format("woff");
 }
 
 .index {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-
-.index .topic {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, 1fr);
   gap: 10px;
 }
 
 .index-button {
   text-align: center;
   background-color: #081277;
-  padding: 2rem;
+  padding: 1rem;
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 2.5rem;
   white-space: nowrap;
   font-weight: bold;
+
+  background: url("assets/bg.png");
+  background-color: rgba(0, 0, 0, 0.2);
+  background-blend-mode: multiply;
 }
 
-.topic-title {
+.index-page-topic-title {
   color: white;
 }
 
 .question {
   text-shadow: 5px 3px 2px black;
   color: #d69f4c;
+}
+
+.question-page-topic-title {
+  color: white;
+}
+
+.question-title {
+  color: white;
 }
