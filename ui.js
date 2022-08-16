@@ -65,6 +65,7 @@ const Topic = (actions, title, topicId, questions) => {
 
   return [
     m("div.index-button.index-page-topic-title", title),
+    m("div.index-title-gap", ""),
     ...buttons,
   ];
 };
