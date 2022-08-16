@@ -1,4 +1,4 @@
-import { m } from "./deps/mithril.js";
+import { m, route } from "./deps/mithril.js";
 
 export const IndexPage = (topics) => () => {
   const state = State(topics);
@@ -74,8 +74,10 @@ const QuestionButton = (actions, burnt, difficulty, topicId) =>
   m(
     "a.index-button.question",
     {
-      href: `#!/q/${topicId}/${difficulty}`,
-      onclick: () => actions.burn(topicId, difficulty),
+      onclick() {
+        actions.burn(topicId, difficulty);
+        route.set(`/q/${topicId}/${difficulty}`);
+      },
     },
     difficulties[difficulty]
   );
