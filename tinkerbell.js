@@ -159,7 +159,7 @@ export function fairyDustCursor(options) {
   }
 
   function loop(timestamp) {
-    if (!previousTimeStamp || timestamp - previousTimeStamp > 70) {
+    if (!previousTimeStamp || timestamp - previousTimeStamp > 40) {
       updateParticles();
       previousTimeStamp = timestamp;
     }
