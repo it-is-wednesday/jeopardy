@@ -72,7 +72,7 @@ const Topic = (actions, title, topicId, questions) => {
 
 const QuestionButton = (actions, burnt, difficulty, topicId) =>
   m(
-    "a.index-button.question",
+    "a.index-button.question.glow-on-hover",
     {
       class: burnt ? "burnt" : null,
       onclick: () => {
