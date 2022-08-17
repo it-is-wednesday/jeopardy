@@ -12,7 +12,7 @@ export function fairyDustCursor(options) {
     "#98d0e6",
   ];
   let hasWrapperEl = options && options.element;
-  let element = hasWrapperEl || document.body;
+  let element = hasWrapperEl || document.documentElement;
 
   let width = window.innerWidth;
   let height = window.innerHeight;
