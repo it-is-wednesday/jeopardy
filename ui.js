@@ -1,9 +1,6 @@
 import { m, route } from "./deps/mithril.js";
 
-export const IndexPage = (topics) => () => {
-  const state = State(topics);
-  const actions = Actions(state);
-
+export const IndexPage = (state, actions) => () => {
   return {
     view() {
       return m(
@@ -20,19 +17,14 @@ export const QuestionPage = (topics) => ({
   view(vnode) {
     const topic = topics[vnode.attrs.topicId];
     return m("div.question-page", [
+      m("a", { href: "#!/" }, "back"),
       m("div.question-page-topic-title", topic.title),
       m("div.question-title", topic.questions[vnode.attrs.difficulty]),
     ]);
   },
 });
 
-const difficulties = {
-  1: "קלי קלות",
-  2: "מאתגר",
-  3: "קשה אש",
-};
-
-const State = (topics) =>
+export const State = (topics) =>
   Object.fromEntries(
     topics.map(({ title, questions }, topicId) => [
       topicId,
@@ -52,9 +44,17 @@ const State = (topics) =>
     ])
   );
 
-const Actions = (state) => ({
-  burn: (topicId, difficulty) => console.log("dont forget to implement ;)"),
+export const Actions = (state) => ({
+  burn(topicId, difficulty) {
+    state[topicId].questions[difficulty].burnt = true;
+  },
 });
+
+const difficulties = {
+  1: "קלי קלות",
+  2: "מאתגר",
+  3: "קשה אש",
+};
 
 /** A column of questions in index page, with the topic title as the first row. */
 const Topic = (actions, title, topicId, questions) => {
@@ -74,7 +74,8 @@ const QuestionButton = (actions, burnt, difficulty, topicId) =>
   m(
     "a.index-button.question",
     {
-      onclick() {
+      class: burnt ? "burnt" : null,
+      onclick: () => {
         actions.burn(topicId, difficulty);
         route.set(`/q/${topicId}/${difficulty}`);
       },

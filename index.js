@@ -1,7 +1,7 @@
 import "./tinkerbell.js";
 
 import { route } from "./deps/mithril.js";
-import { IndexPage, QuestionPage } from "./ui.js";
+import { IndexPage, QuestionPage, State, Actions } from "./ui.js";
 import { parseXlsx } from "./excel.js";
 
 const fileInput = document.getElementById("xlsx");
@@ -11,8 +11,11 @@ fileInput.addEventListener("change", async () => {
   const uploadedFile = await fileInput.files[0].arrayBuffer();
   const topics = parseXlsx(uploadedFile);
 
+  const state = State(topics);
+  const actions = Actions(state);
+
   route(document.querySelector("main"), "/index", {
-    "/index": IndexPage(topics),
+    "/index": IndexPage(state, actions),
     "/q/:topicId/:difficulty": QuestionPage(topics),
   });
 });
