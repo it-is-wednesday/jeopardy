@@ -1,4 +1,5 @@
-import "./tinkerbell.js";
+import { fairyDustCursor } from "./tinkerbell.js";
+fairyDustCursor();
 
 import { route } from "./deps/mithril.js";
 import { IndexPage, QuestionPage, State, Actions } from "./ui.js";

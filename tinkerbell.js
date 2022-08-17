@@ -1,189 +1,200 @@
 /**
- * Cute old school cursor effects
+ * Fairy dust cursor trail 🥹🥹🥹🥹
  *
- * I'm aware of https://github.com/tholman/cursor-effects
- * but it's way too modern and I don't have the nerve to figure out why it
- * looks too smooth. This script looks old. In a good way
+ * Snatched from:
+ * https://github.com/tholman/cursor-effects/blob/433675ed6dfb865b3342e65622ff4ede37cae51b/src/fairyDustCursor.js
  */
-let colour = "#2c88ad"; // in addition to "random" can be set to any valid colour eg "#f0f" or "red"
-let sparkles = 50;
 
-/****************************
- *  Tinkerbell Magic Sparkle *
- *(c)2005-13 mf2fm web-design*
- *  http://www.mf2fm.com/rv  *
- ****************************/
-let x = 400;
-let ox = 400;
-let y = 300;
-let oy = 300;
-let shigh = document.documentElement.clientHeight;
-let sleft = 0;
-let sdown = 0;
-let tiny = [];
-let star = [];
-let starv = [];
-let starx = [];
-let stary = [];
-let tinyx = [];
-let tinyy = [];
-let tinyv = [];
+export function fairyDustCursor(options) {
+  let possibleColors = (options && options.colors) || [
+    "#2c88ad",
+    "#5caaca",
+    "#98d0e6",
+  ];
+  let hasWrapperEl = options && options.element;
+  let element = hasWrapperEl || document.body;
 
-window.addEventListener("load", () => {
-  let rats, rlef, rdow;
-  for (let i = 0; i < sparkles; i++) {
-    rats = createDiv(3, 3);
-    rats.style.visibility = "hidden";
-    rats.style.zIndex = "999";
-    document.body.appendChild((tiny[i] = rats));
-    starv[i] = 0;
-    tinyv[i] = 0;
-    rats = createDiv(5, 5);
-    rats.style.backgroundColor = "transparent";
-    rats.style.visibility = "hidden";
-    rats.style.zIndex = "999";
-    rlef = createDiv(1, 5);
-    rdow = createDiv(5, 1);
-    rats.appendChild(rlef);
-    rats.appendChild(rdow);
-    rlef.style.top = "2px";
-    rlef.style.left = "0px";
-    rdow.style.top = "0px";
-    rdow.style.left = "2px";
-    document.body.appendChild((star[i] = rats));
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  const cursor = { x: width / 2, y: width / 2 };
+  const lastPos = { x: width / 2, y: width / 2 };
+  const particles = [];
+  const canvImages = [];
+  let canvas, context;
+
+  const char = "+";
+
+  let previousTimeStamp;
+
+  function init() {
+    canvas = document.createElement("canvas");
+    context = canvas.getContext("2d");
+    canvas.style.top = "0px";
+    canvas.style.left = "0px";
+    canvas.style.pointerEvents = "none";
+
+    if (hasWrapperEl) {
+      canvas.style.position = "absolute";
+      element.appendChild(canvas);
+      canvas.width = element.clientWidth;
+      canvas.height = element.clientHeight;
+    } else {
+      canvas.style.position = "fixed";
+      element.appendChild(canvas);
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    context.font = "15px serif";
+    context.textBaseline = "middle";
+    context.textAlign = "center";
+
+    possibleColors.forEach((color) => {
+      let measurements = context.measureText(char);
+      let bgCanvas = document.createElement("canvas");
+      let bgContext = bgCanvas.getContext("2d");
+
+      bgCanvas.width = measurements.width;
+      bgCanvas.height =
+        measurements.actualBoundingBoxAscent +
+        measurements.actualBoundingBoxDescent;
+
+      bgContext.fillStyle = color;
+      bgContext.textAlign = "center";
+      bgContext.font = "21px serif";
+      bgContext.textBaseline = "middle";
+      bgContext.fillText(
+        char,
+        bgCanvas.width / 2,
+        measurements.actualBoundingBoxAscent
+      );
+
+      canvImages.push(bgCanvas);
+    });
+
+    bindEvents();
+    loop();
   }
 
-  setInterval(sparkle, 40);
-});
+  // Bind events that are needed
+  function bindEvents() {
+    element.addEventListener("mousemove", onMouseMove);
+    element.addEventListener("touchmove", onTouchMove, { passive: true });
+    element.addEventListener("touchstart", onTouchMove, { passive: true });
+    window.addEventListener("resize", onWindowResize);
+  }
 
-function sparkle() {
-  let c;
-  if (Math.abs(x - ox) > 1 || Math.abs(y - oy) > 1) {
-    ox = x;
-    oy = y;
+  function onWindowResize(e) {
+    width = window.innerWidth;
+    height = window.innerHeight;
 
-    for (c = 0; c < sparkles; c++)
-      if (!starv[c]) {
-        const bgColor = colour == "random" ? newColour() : colour;
-        star[c].childNodes[0].style.backgroundColor = bgColor;
-        star[c].childNodes[1].style.backgroundColor = bgColor;
+    if (hasWrapperEl) {
+      canvas.width = element.clientWidth;
+      canvas.height = element.clientHeight;
+    } else {
+      canvas.width = width;
+      canvas.height = height;
+    }
+  }
 
-        starx[c] = x;
-        stary[c] = y + 1;
-        star[c].style.left = `${starx[c]}px`;
-        star[c].style.top = `${stary[c]}px`;
-
-        star[c].style.clip = "rect(0px, 5px, 5px, 0px)";
-        star[c].style.visibility = "visible";
-        starv[c] = 50;
-        break;
+  function onTouchMove(e) {
+    if (e.touches.length > 0) {
+      for (let i = 0; i < e.touches.length; i++) {
+        addParticle(
+          e.touches[i].clientX,
+          e.touches[i].clientY,
+          canvImages[Math.floor(Math.random() * canvImages.length)]
+        );
       }
-  }
-  for (c = 0; c < sparkles; c++) {
-    if (starv[c]) update_star(c);
-    if (tinyv[c]) update_tiny(c);
-  }
-}
-
-function update_star(i) {
-  if (--starv[i] == 25) star[i].style.clip = "rect(1px, 4px, 4px, 1px)";
-  if (starv[i]) {
-    stary[i] += 1 + Math.random() * 3;
-    starx[i] += ((i % 5) - 2) / 5;
-    if (stary[i] < shigh + sdown) {
-      star[i].style.top = stary[i] + "px";
-      star[i].style.left = starx[i] + "px";
-    } else {
-      star[i].style.visibility = "hidden";
-      starv[i] = 0;
-      return;
     }
-  } else {
-    tinyv[i] = 50;
-    tiny[i].style.top = (tinyy[i] = stary[i]) + "px";
-    tiny[i].style.left = (tinyx[i] = starx[i]) + "px";
-    tiny[i].style.width = "2px";
-    tiny[i].style.height = "2px";
-    tiny[i].style.backgroundColor = star[i].childNodes[0].style.backgroundColor;
-    star[i].style.visibility = "hidden";
-    tiny[i].style.visibility = "visible";
   }
-}
 
-function update_tiny(i) {
-  if (--tinyv[i] == 25) {
-    tiny[i].style.width = "1px";
-    tiny[i].style.height = "1px";
+  function onMouseMove(e) {
+    window.requestAnimationFrame(() => {
+      if (hasWrapperEl) {
+        const boundingRect = element.getBoundingClientRect();
+        cursor.x = e.clientX - boundingRect.left;
+        cursor.y = e.clientY - boundingRect.top;
+      } else {
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+      }
+
+      const distBetweenPoints = Math.hypot(
+        cursor.x - lastPos.x,
+        cursor.y - lastPos.y
+      );
+
+      if (distBetweenPoints > Math.random() * 100) {
+        addParticle(
+          cursor.x,
+          cursor.y,
+          canvImages[Math.floor(Math.random() * possibleColors.length)]
+        );
+
+        lastPos.x = cursor.x;
+        lastPos.y = cursor.y;
+      }
+    });
   }
-  if (tinyv[i]) {
-    tinyy[i] += 1 + Math.random() * 3;
-    tinyx[i] += ((i % 5) - 2) / 5;
-    if (tinyy[i] < shigh + sdown) {
-      tiny[i].style.top = tinyy[i] + "px";
-      tiny[i].style.left = tinyx[i] + "px";
-    } else {
-      tiny[i].style.visibility = "hidden";
-      tinyv[i] = 0;
-      return;
+
+  function addParticle(x, y, color) {
+    particles.push(new Particle(x, y, color));
+  }
+
+  function updateParticles() {
+    context.clearRect(0, 0, width, height);
+
+    // Update
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update(context);
     }
-  } else tiny[i].style.visibility = "hidden";
-}
 
-document.addEventListener("mousemove", (event) => {
-  if (event) {
-    y = event.pageY;
-    x = event.pageX;
-  } else {
-    set_scroll();
-    y = event.y + sdown;
-    x = event.x + sleft;
+    // Remove dead particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      if (particles[i].lifeSpan < 0) {
+        particles.splice(i, 1);
+      }
+    }
   }
-});
 
-window.addEventListener("scroll", set_scroll);
-function set_scroll() {
-  if (typeof self.pageYOffset == "number") {
-    sdown = self.pageYOffset;
-    sleft = self.pageXOffset;
-  } else if (
-    document.body &&
-    (document.body.scrollTop || document.body.scrollLeft)
-  ) {
-    sdown = document.body.scrollTop;
-    sleft = document.body.scrollLeft;
-  } else if (
-    document.documentElement &&
-    (document.documentElement.scrollTop || document.documentElement.scrollLeft)
-  ) {
-    sleft = document.documentElement.scrollLeft;
-    sdown = document.documentElement.scrollTop;
-  } else {
-    sdown = 0;
-    sleft = 0;
+  function loop(timestamp) {
+    if (!previousTimeStamp || timestamp - previousTimeStamp > 70) {
+      updateParticles();
+      previousTimeStamp = timestamp;
+    }
+    requestAnimationFrame(loop);
   }
-}
 
-window.addEventListener(
-  "resize",
-  () => (shigh = document.documentElement.clientHeight)
-);
+  function Particle(x, y, canvasItem) {
+    const lifeSpan = 20;
+    this.initialLifeSpan = lifeSpan; //
+    this.lifeSpan = lifeSpan; //ms
+    this.velocity = {
+      x: (Math.random() < 0.5 ? -1 : 1) * Math.random() * 2,
+      y: Math.random() * 0.7 + 0.9 + 3,
+    };
+    this.position = { x: x, y: y };
+    this.canv = canvasItem;
 
-function createDiv(height, width) {
-  var div = document.createElement("div");
-  div.style.position = "absolute";
-  div.style.height = height + "px";
-  div.style.width = width + "px";
-  div.style.overflow = "hidden";
-  return div;
-}
+    this.update = function (context) {
+      this.position.x += this.velocity.x;
+      this.position.y += this.velocity.y;
+      this.lifeSpan--;
 
-function newColour() {
-  var c = [];
-  c[0] = 255;
-  c[1] = Math.floor(Math.random() * 256);
-  c[2] = Math.floor(Math.random() * (256 - c[1] / 2));
-  c.sort(function () {
-    return 0.5 - Math.random();
-  });
-  return "rgb(" + c[0] + ", " + c[1] + ", " + c[2] + ")";
+      this.velocity.y += 0.02;
+
+      const scale = Math.max(this.lifeSpan / this.initialLifeSpan, 0);
+
+      context.drawImage(
+        this.canv,
+        this.position.x - this.canv.width * scale,
+        this.position.y - this.canv.height,
+        this.canv.width,
+        this.canv.height
+      );
+    };
+  }
+
+  init();
 }
