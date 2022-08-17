@@ -1,3 +1,5 @@
+import "./tinkerbell.js";
+
 import { route } from "./deps/mithril.js";
 import { IndexPage, QuestionPage } from "./ui.js";
 import { parseXlsx } from "./excel.js";

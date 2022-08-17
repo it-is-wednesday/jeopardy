@@ -1,4 +1,6 @@
 /**
+ * Cute old school cursor effects
+ *
  * I'm aware of https://github.com/tholman/cursor-effects
  * but it's way too modern and I don't have the nerve to figure out why it
  * looks too smooth. This script looks old. In a good way
@@ -50,7 +52,8 @@ window.addEventListener("load", () => {
     rdow.style.left = "2px";
     document.body.appendChild((star[i] = rats));
   }
-  sparkle();
+
+  setInterval(sparkle, 40);
 });
 
 function sparkle() {
@@ -80,7 +83,6 @@ function sparkle() {
     if (starv[c]) update_star(c);
     if (tinyv[c]) update_tiny(c);
   }
-  setTimeout("sparkle()", 40);
 }
 
 function update_star(i) {
