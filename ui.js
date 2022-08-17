@@ -14,14 +14,11 @@ export const IndexPage = (state, actions) => () => {
 };
 
 export const QuestionPage = (topics) => ({
-  view(vnode) {
-    const topic = topics[vnode.attrs.topicId];
-    return m("div.question-page", [
-      m("a", { href: "#!/" }, "back"),
-      m("div.question-page-topic-title", topic.title),
-      m("div.question-title", topic.questions[vnode.attrs.difficulty]),
-    ]);
-  },
+  view: (vnode) =>
+    m(
+      "div.question-page-text",
+      topics[vnode.attrs.topicId].questions[vnode.attrs.difficulty]
+    ),
 });
 
 export const State = (topics) =>

@@ -20,3 +20,11 @@ fileInput.addEventListener("change", async () => {
     "/q/:topicId/:difficulty": QuestionPage(topics),
   });
 });
+
+// Should be used in `QuestionPage`s because I deliberately didn't include a
+// back button there because there isn't a back button in the original Jeopardy
+// duh...
+window.addEventListener(
+  "keydown",
+  (event) => event.key === "Backspace" && route.set("/")
+);
