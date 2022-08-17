@@ -1,4 +1,4 @@
-import { read as readXLSX } from "./deps/xlsx.mjs";
+import { read as readXLSX } from "./deps/xlsx.js";
 
 /**
  * Turn Sheet into an array of topics with questions.
