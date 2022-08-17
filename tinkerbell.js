@@ -15,8 +15,7 @@ let x = 400;
 let ox = 400;
 let y = 300;
 let oy = 300;
-let swide = 800;
-let shigh = 600;
+let shigh = document.documentElement.clientHeight;
 let sleft = 0;
 let sdown = 0;
 let tiny = [];
@@ -51,7 +50,6 @@ window.addEventListener("load", () => {
     rdow.style.left = "2px";
     document.body.appendChild((star[i] = rats));
   }
-  set_width();
   sparkle();
 });
 
@@ -163,38 +161,11 @@ function set_scroll() {
   }
 }
 
-function set_width() {
-  let sw_min = 999999;
-  let sh_min = 999999;
+window.addEventListener(
+  "resize",
+  () => (shigh = document.documentElement.clientHeight)
+);
 
-  if (document.documentElement && document.documentElement.clientWidth) {
-    if (document.documentElement.clientWidth > 0)
-      sw_min = document.documentElement.clientWidth;
-    if (document.documentElement.clientHeight > 0)
-      sh_min = document.documentElement.clientHeight;
-  }
-
-  if (typeof self.innerWidth == "number" && self.innerWidth) {
-    if (self.innerWidth > 0 && self.innerWidth < sw_min)
-      sw_min = self.innerWidth;
-    if (self.innerHeight > 0 && self.innerHeight < sh_min)
-      sh_min = self.innerHeight;
-  }
-  if (document.body.clientWidth) {
-    if (document.body.clientWidth > 0 && document.body.clientWidth < sw_min)
-      sw_min = document.body.clientWidth;
-    if (document.body.clientHeight > 0 && document.body.clientHeight < sh_min)
-      sh_min = document.body.clientHeight;
-  }
-  if (sw_min == 999999 || sh_min == 999999) {
-    sw_min = 800;
-    sh_min = 600;
-  }
-  swide = sw_min;
-  shigh = sh_min;
-}
-
-window.addEventListener("resize", set_width);
 function createDiv(height, width) {
   var div = document.createElement("div");
   div.style.position = "absolute";
