@@ -1,4 +1,5 @@
-import { read as readXLSX } from "./deps/xlsx.js";
+import "./deps/xlsx.js";
+const SheetJS = XLSX; // `XLSX` is implicitly created by the `xlsx.js` import
 
 /**
  * Turn Sheet into an array of topics with questions.
@@ -41,7 +42,7 @@ function topicsInSheet(sheet) {
 }
 
 export function parseXlsx(uploadedXlsxFile) {
-  const xlsx = readXLSX(uploadedXlsxFile);
+  const xlsx = SheetJS.read(uploadedXlsxFile);
   const firstSheet = Object.values(xlsx.Sheets)[0];
   return topicsInSheet(firstSheet);
 }
