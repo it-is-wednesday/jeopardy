@@ -1,17 +1,25 @@
 import { m, route } from "./deps/mithril.js";
 
-export const IndexPage = (state, actions) => () => {
-  return {
-    view() {
-      return m(
-        "div.index",
-        ...Object.entries(state).map(([topicId, topic]) =>
-          Topic(actions, topic.title, topicId, topic.questions)
-        )
-      );
-    },
-  };
-};
+export const IndexPage = (state, actions) => () => ({
+  view() {
+    const numOfColumns = Object.keys(state).length;
+    // assuming here that we're well behaved and that all columns have the same
+    // amount of rows
+    const numOfRows = Object.keys(state[0].questions).length;
+
+    const style = {
+      // makes all columns the same width
+      gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
+      // second element is a separator row, to create a gap after the topic row
+      gridTemplateRows: `1fr 0.15fr repeat(${numOfRows}, 1fr)`,
+    };
+
+    const toTopic = ([topicId, topic]) =>
+      Topic(actions, topic.title, topicId, topic.questions);
+
+    return m("div#index", { style }, Object.entries(state).map(toTopic));
+  },
+});
 
 export const QuestionPage = (topics) => ({
   view: (vnode) =>
