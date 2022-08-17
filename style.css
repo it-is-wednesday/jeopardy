@@ -66,10 +66,9 @@ body {
   color: #d69f4c;
 }
 
-.question-page-topic-title {
+.question-page-text {
   color: white;
-}
-
-.question-title {
-  color: white;
+  font-size: 8rem;
+  font-weight: bold;
+  text-shadow: 7px 5px 3px black;
 }
