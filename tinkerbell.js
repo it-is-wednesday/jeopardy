@@ -1,71 +1,78 @@
-var colour = "#2c88ad"; // in addition to "random" can be set to any valid colour eg "#f0f" or "red"
-var sparkles = 50;
+/**
+ * I'm aware of https://github.com/tholman/cursor-effects
+ * but it's way too modern and I don't have the nerve to figure out why it
+ * looks too smooth. This script looks old. In a good way
+ */
+let colour = "#2c88ad"; // in addition to "random" can be set to any valid colour eg "#f0f" or "red"
+let sparkles = 50;
 
 /****************************
  *  Tinkerbell Magic Sparkle *
  *(c)2005-13 mf2fm web-design*
  *  http://www.mf2fm.com/rv  *
  ****************************/
-var x = 400;
-var ox = 400;
-var y = 300;
-var oy = 300;
-var swide = 800;
-var shigh = 600;
-var sleft = 0;
-var sdown = 0;
-var tiny = new Array();
-var star = new Array();
-var starv = new Array();
-var starx = new Array();
-var stary = new Array();
-var tinyx = new Array();
-var tinyy = new Array();
-var tinyv = new Array();
+let x = 400;
+let ox = 400;
+let y = 300;
+let oy = 300;
+let swide = 800;
+let shigh = 600;
+let sleft = 0;
+let sdown = 0;
+let tiny = [];
+let star = [];
+let starv = [];
+let starx = [];
+let stary = [];
+let tinyx = [];
+let tinyy = [];
+let tinyv = [];
 
-window.onload = function () {
-  if (document.getElementById) {
-    var i, rats, rlef, rdow;
-    for (var i = 0; i < sparkles; i++) {
-      var rats = createDiv(3, 3);
-      rats.style.visibility = "hidden";
-      rats.style.zIndex = "999";
-      document.body.appendChild((tiny[i] = rats));
-      starv[i] = 0;
-      tinyv[i] = 0;
-      var rats = createDiv(5, 5);
-      rats.style.backgroundColor = "transparent";
-      rats.style.visibility = "hidden";
-      rats.style.zIndex = "999";
-      var rlef = createDiv(1, 5);
-      var rdow = createDiv(5, 1);
-      rats.appendChild(rlef);
-      rats.appendChild(rdow);
-      rlef.style.top = "2px";
-      rlef.style.left = "0px";
-      rdow.style.top = "0px";
-      rdow.style.left = "2px";
-      document.body.appendChild((star[i] = rats));
-    }
-    set_width();
-    sparkle();
+window.addEventListener("load", () => {
+  let rats, rlef, rdow;
+  for (let i = 0; i < sparkles; i++) {
+    rats = createDiv(3, 3);
+    rats.style.visibility = "hidden";
+    rats.style.zIndex = "999";
+    document.body.appendChild((tiny[i] = rats));
+    starv[i] = 0;
+    tinyv[i] = 0;
+    rats = createDiv(5, 5);
+    rats.style.backgroundColor = "transparent";
+    rats.style.visibility = "hidden";
+    rats.style.zIndex = "999";
+    rlef = createDiv(1, 5);
+    rdow = createDiv(5, 1);
+    rats.appendChild(rlef);
+    rats.appendChild(rdow);
+    rlef.style.top = "2px";
+    rlef.style.left = "0px";
+    rdow.style.top = "0px";
+    rdow.style.left = "2px";
+    document.body.appendChild((star[i] = rats));
   }
-};
+  set_width();
+  sparkle();
+});
 
 function sparkle() {
-  var c;
+  let c;
   if (Math.abs(x - ox) > 1 || Math.abs(y - oy) > 1) {
     ox = x;
     oy = y;
+
     for (c = 0; c < sparkles; c++)
       if (!starv[c]) {
-        star[c].style.left = (starx[c] = x) + "px";
-        star[c].style.top = (stary[c] = y + 1) + "px";
+        const bgColor = colour == "random" ? newColour() : colour;
+        star[c].childNodes[0].style.backgroundColor = bgColor;
+        star[c].childNodes[1].style.backgroundColor = bgColor;
+
+        starx[c] = x;
+        stary[c] = y + 1;
+        star[c].style.left = `${starx[c]}px`;
+        star[c].style.top = `${stary[c]}px`;
+
         star[c].style.clip = "rect(0px, 5px, 5px, 0px)";
-        star[c].childNodes[0].style.backgroundColor = star[
-          c
-        ].childNodes[1].style.backgroundColor =
-          colour == "random" ? newColour() : colour;
         star[c].style.visibility = "visible";
         starv[c] = 50;
         break;
@@ -122,19 +129,18 @@ function update_tiny(i) {
   } else tiny[i].style.visibility = "hidden";
 }
 
-document.onmousemove = mouse;
-function mouse(e) {
-  if (e) {
-    y = e.pageY;
-    x = e.pageX;
+document.addEventListener("mousemove", (event) => {
+  if (event) {
+    y = event.pageY;
+    x = event.pageX;
   } else {
     set_scroll();
     y = event.y + sdown;
     x = event.x + sleft;
   }
-}
+});
 
-window.onscroll = set_scroll;
+window.addEventListener("scroll", set_scroll);
 function set_scroll() {
   if (typeof self.pageYOffset == "number") {
     sdown = self.pageYOffset;
@@ -157,16 +163,17 @@ function set_scroll() {
   }
 }
 
-window.onresize = set_width;
 function set_width() {
-  var sw_min = 999999;
-  var sh_min = 999999;
+  let sw_min = 999999;
+  let sh_min = 999999;
+
   if (document.documentElement && document.documentElement.clientWidth) {
     if (document.documentElement.clientWidth > 0)
       sw_min = document.documentElement.clientWidth;
     if (document.documentElement.clientHeight > 0)
       sh_min = document.documentElement.clientHeight;
   }
+
   if (typeof self.innerWidth == "number" && self.innerWidth) {
     if (self.innerWidth > 0 && self.innerWidth < sw_min)
       sw_min = self.innerWidth;
@@ -187,6 +194,7 @@ function set_width() {
   shigh = sh_min;
 }
 
+window.addEventListener("resize", set_width);
 function createDiv(height, width) {
   var div = document.createElement("div");
   div.style.position = "absolute";
@@ -197,7 +205,7 @@ function createDiv(height, width) {
 }
 
 function newColour() {
-  var c = new Array();
+  var c = [];
   c[0] = 255;
   c[1] = Math.floor(Math.random() * 256);
   c[2] = Math.floor(Math.random() * (256 - c[1] / 2));
