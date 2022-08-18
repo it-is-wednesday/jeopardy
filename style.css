@@ -70,3 +70,9 @@ body {
   font-weight: bold;
   text-shadow: 7px 5px 3px black;
 }
+
+.intro-explanation {
+  background: white;
+  font-family: Arial;
+  padding: 2rem;
+}
