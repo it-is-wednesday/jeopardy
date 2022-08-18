@@ -25,7 +25,12 @@ export const QuestionPage = (topics) => ({
   view: (vnode) =>
     m(
       "div.question-page-text",
+      // if I don't put each line in its own div, they will appear on the same
+      // line
       topics[vnode.attrs.topicId].questions[vnode.attrs.difficulty]
+        .trim()
+        .split("\n")
+        .map((line) => m("div", line))
     ),
 });
 
