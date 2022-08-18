@@ -5,6 +5,7 @@ import { route } from "./deps/mithril.js";
 import { IndexPage, QuestionPage, State, Actions } from "./ui.js";
 import { parseXlsx } from "./excel.js";
 
+route.set("/");
 const fileInput = document.getElementById("xlsx");
 
 fileInput.addEventListener("change", async () => {
