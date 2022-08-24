@@ -79,3 +79,9 @@ body {
   font-family: Arial;
   padding: 2rem;
 }
+
+.keybinding {
+  direction: ltr;
+  background: #e6e6e6;
+  padding: 3px;
+}
