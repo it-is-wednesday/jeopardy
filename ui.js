@@ -9,7 +9,8 @@ export const IndexPage = (state, actions) => () => ({
 
     const style = {
       // makes all columns the same width
-      gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
+      // last column is scores
+      gridTemplateColumns: `repeat(${numOfColumns}, 1fr) 0.5fr`,
       // second element is a separator row, to create a gap after the topic row
       gridTemplateRows: `1fr 0.15fr repeat(${numOfRows}, 1fr)`,
     };
@@ -17,7 +18,18 @@ export const IndexPage = (state, actions) => () => ({
     const toTopic = ([topicId, topic]) =>
       Topic(actions, topic.title, topicId, topic.questions);
 
-    return m("div#index", { style }, Object.entries(state).map(toTopic));
+    const scores = [
+      m("div"), // for the topics row
+      m("div"), // for the separator row
+      ...Object.keys(difficulties).map((num) =>
+        m("div.score", [m("div.shekel", "₪"), m("div", `${num}00`)])
+      ),
+    ];
+
+    return m("div#index", { style }, [
+      ...Object.entries(state).map(toTopic),
+      scores,
+    ]);
   },
 });
 
