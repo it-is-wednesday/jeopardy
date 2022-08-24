@@ -61,9 +61,13 @@ export const Actions = (state) => ({
 });
 
 const difficulties = {
-  1: "קלי קלות",
-  2: "מאתגר",
-  3: "קשה אש",
+  1: "בדיחה",
+  2: "קליל",
+  3: "קל",
+  4: "בינוני",
+  5: "קשה",
+  6: "קשה מאוד",
+  7: "קיצוני",
 };
 
 /** A column of questions in index page, with the topic title as the first row. */
