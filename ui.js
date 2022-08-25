@@ -1,5 +1,10 @@
 import { m, route } from "./deps/mithril.js";
 
+export const SplashPage = {
+  view: () =>
+    m("div.splash-page", { onclick: (_event) => route.set("/index") }),
+};
+
 export const IndexPage = (state, actions) => () => ({
   view() {
     const numOfColumns = Object.keys(state).length;

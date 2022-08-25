@@ -2,10 +2,9 @@ import { fairyDustCursor } from "./tinkerbell.js";
 fairyDustCursor();
 
 import { route } from "./deps/mithril.js";
-import { IndexPage, QuestionPage, State, Actions } from "./ui.js";
+import { IndexPage, QuestionPage, SplashPage, State, Actions } from "./ui.js";
 import { parseXlsx } from "./excel.js";
 
-route.set("/");
 const fileInput = document.getElementById("xlsx");
 
 fileInput.addEventListener("change", async () => {
@@ -15,8 +14,9 @@ fileInput.addEventListener("change", async () => {
   const state = State(topics);
   const actions = Actions(state);
 
-  route(document.querySelector("main"), "/index", {
+  route(document.querySelector("body"), "/splash", {
     "/index": IndexPage(state, actions),
+    "/splash": SplashPage,
     "/q/:topicId/:difficulty": QuestionPage(topics),
   });
 });
@@ -26,5 +26,5 @@ fileInput.addEventListener("change", async () => {
 // duh...
 window.addEventListener(
   "keydown",
-  (event) => event.key === "Backspace" && route.set("/")
+  (event) => event.key === "Backspace" && route.set("/index")
 );
