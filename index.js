@@ -8,6 +8,8 @@ import { parseXlsx } from "./excel.js";
 const fileInput = document.getElementById("xlsx");
 
 fileInput.addEventListener("change", async () => {
+  route.set("/");
+
   const uploadedFile = await fileInput.files[0].arrayBuffer();
   const topics = parseXlsx(uploadedFile);
 
