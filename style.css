@@ -80,6 +80,10 @@ body {
   padding: 2rem;
 }
 
+.intro-explanation li {
+  margin-bottom: 1rem;
+}
+
 .keybinding {
   direction: ltr;
   background: #e6e6e6;
