@@ -26,7 +26,7 @@ export const IndexPage = (state, actions) => () => ({
     const scores = [
       m("div"), // for the topics row
       m("div"), // for the separator row
-      ...Object.keys(difficulties).map((num) =>
+      ...Object.keys(difficulties).slice(0, numOfRows).map((num) =>
         m("div.score", [m("div.shekel", "₪"), m("div", `${num}00`)])
       ),
     ];
