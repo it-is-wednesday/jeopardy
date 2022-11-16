@@ -21,8 +21,11 @@ const SheetJS = XLSX; // `XLSX` is implicitly created by the `xlsx.js` import
 function topicsInSheet(sheet) {
   const topics = {};
 
-  // skip first element because it's the special value `!ref`
-  for (const k of Object.keys(sheet).slice(1, -1)) {
+  for (const k of Object.keys(sheet)) {
+    if (k === "!ref" || k === "!margins") {
+      continue;
+    }
+
     const cellContent = sheet[k].v;
 
     // columns are letters, used to identify topics
