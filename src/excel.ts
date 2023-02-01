@@ -1,5 +1,11 @@
-import "./deps/xlsx.js";
-const SheetJS = XLSX; // `XLSX` is implicitly created by the `xlsx.js` import
+import * as SheetJS from "xlsx";
+
+type Question = {
+  title: string;
+  questions: {
+    [difficulty: string]: string;
+  };
+};
 
 /**
  * Turn Sheet into an array of topics with questions.
@@ -18,8 +24,8 @@ const SheetJS = XLSX; // `XLSX` is implicitly created by the `xlsx.js` import
  *     { title: 'topic3', questions: { '1': 'c', '2': 'f', '3': 'i' } }
  *   ]
  */
-function topicsInSheet(sheet) {
-  const topics = {};
+function topicsInSheet(sheet: SheetJS.WorkSheet) {
+  const topics: { [i: string]: Question } = {};
 
   for (const k of Object.keys(sheet)) {
     if (k === "!ref" || k === "!margins") {
@@ -30,7 +36,7 @@ function topicsInSheet(sheet) {
 
     // columns are letters, used to identify topics
     // rows are numbers, represent difficulty
-    const [, columnNum, rowNum] = k.match(/([A-Z]+?)([0-9]+)/);
+    const [, columnNum, rowNum] = k.match(/([A-Z]+?)([0-9]+)/)!;
 
     // first row contains topic titles
     if (rowNum === "1") {
@@ -44,7 +50,7 @@ function topicsInSheet(sheet) {
   return Object.values(topics);
 }
 
-export function parseXlsx(uploadedXlsxFile) {
+export function parseXlsx(uploadedXlsxFile: Blob) {
   const xlsx = SheetJS.read(uploadedXlsxFile);
   const firstSheet = Object.values(xlsx.Sheets)[0];
   return topicsInSheet(firstSheet);

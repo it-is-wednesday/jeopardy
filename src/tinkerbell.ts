@@ -10,7 +10,46 @@ type Options = {
   element: HTMLElement;
 };
 
-export function fairyDustCursor(options: Options) {
+class Particle {
+  initialLifeSpan: number;
+  lifeSpan: number;
+  velocity: { x: number; y: number };
+  position: { x: number; y: number };
+  canv: HTMLCanvasElement;
+  update: (context: CanvasRenderingContext2D) => void;
+
+  constructor(x: number, y: number, canvasItem: HTMLCanvasElement) {
+    const lifeSpan = 20;
+    this.initialLifeSpan = lifeSpan; //
+    this.lifeSpan = lifeSpan; //ms
+    this.velocity = {
+      x: (Math.random() < 0.5 ? -1 : 1) * Math.random() * 2,
+      y: Math.random() * 0.7 + 0.9 + 3,
+    };
+    this.position = { x: x, y: y };
+    this.canv = canvasItem;
+
+    this.update = function (context: CanvasRenderingContext2D) {
+      this.position.x += this.velocity.x;
+      this.position.y += this.velocity.y;
+      this.lifeSpan--;
+
+      this.velocity.y += 0.02;
+
+      const scale = Math.max(this.lifeSpan / this.initialLifeSpan, 0);
+
+      context.drawImage(
+        this.canv,
+        this.position.x - this.canv.width * scale,
+        this.position.y - this.canv.height,
+        this.canv.width,
+        this.canv.height
+      );
+    };
+  }
+}
+
+export function fairyDustCursor(options?: Options) {
   let possibleColors = (options && options.colors) || [
     "#2c88ad",
     "#5caaca",
@@ -23,17 +62,17 @@ export function fairyDustCursor(options: Options) {
   let height = window.innerHeight;
   const cursor = { x: width / 2, y: width / 2 };
   const lastPos = { x: width / 2, y: width / 2 };
-  const particles = [];
+  const particles: Particle[] = [];
   const canvImages: HTMLCanvasElement[] = [];
   let canvas: HTMLCanvasElement, context: CanvasRenderingContext2D;
 
   const char = "+";
 
-  let previousTimeStamp: number;
+  let previousTimeStamp: number | undefined;
 
   function init() {
     canvas = document.createElement("canvas");
-    context = canvas.getContext("2d");
+    context = canvas.getContext("2d")!;
     canvas.style.top = "0px";
     canvas.style.left = "0px";
     canvas.style.pointerEvents = "none";
@@ -57,7 +96,7 @@ export function fairyDustCursor(options: Options) {
     possibleColors.forEach((color: string | CanvasGradient | CanvasPattern) => {
       let measurements = context.measureText(char);
       let bgCanvas = document.createElement("canvas");
-      let bgContext = bgCanvas.getContext("2d");
+      let bgContext = bgCanvas.getContext("2d")!;
 
       bgCanvas.width = measurements.width;
       bgCanvas.height =
@@ -164,41 +203,11 @@ export function fairyDustCursor(options: Options) {
   }
 
   function loop(timestamp?: number) {
-    if (!previousTimeStamp || timestamp - previousTimeStamp > 40) {
+    if (!previousTimeStamp || (timestamp && timestamp - previousTimeStamp > 40)) {
       updateParticles();
       previousTimeStamp = timestamp;
     }
     requestAnimationFrame(loop);
-  }
-
-  function Particle(x: number, y: number, canvasItem: HTMLCanvasElement) {
-    const lifeSpan = 20;
-    this.initialLifeSpan = lifeSpan; //
-    this.lifeSpan = lifeSpan; //ms
-    this.velocity = {
-      x: (Math.random() < 0.5 ? -1 : 1) * Math.random() * 2,
-      y: Math.random() * 0.7 + 0.9 + 3,
-    };
-    this.position = { x: x, y: y };
-    this.canv = canvasItem;
-
-    this.update = function (context: CanvasRenderingContext2D) {
-      this.position.x += this.velocity.x;
-      this.position.y += this.velocity.y;
-      this.lifeSpan--;
-
-      this.velocity.y += 0.02;
-
-      const scale = Math.max(this.lifeSpan / this.initialLifeSpan, 0);
-
-      context.drawImage(
-        this.canv,
-        this.position.x - this.canv.width * scale,
-        this.position.y - this.canv.height,
-        this.canv.width,
-        this.canv.height
-      );
-    };
   }
 
   init();
