@@ -1,11 +1,5 @@
 import * as SheetJS from "xlsx";
-
-type Question = {
-  title: string;
-  questions: {
-    [difficulty: string]: string;
-  };
-};
+import type { State, Topic } from "./index";
 
 /**
  * Turn Sheet into an array of topics with questions.
@@ -24,15 +18,15 @@ type Question = {
  *     { title: 'topic3', questions: { '1': 'c', '2': 'f', '3': 'i' } }
  *   ]
  */
-function topicsInSheet(sheet: SheetJS.WorkSheet) {
-  const topics: { [i: string]: Question } = {};
+function stateFromSheet(sheet: SheetJS.WorkSheet): State {
+  const topics: { [i: string]: Topic } = {};
 
   for (const k of Object.keys(sheet)) {
     if (k === "!ref" || k === "!margins") {
       continue;
     }
 
-    const cellContent = sheet[k].v;
+    const cellContent: string = sheet[k].v;
 
     // columns are letters, used to identify topics
     // rows are numbers, represent difficulty
@@ -43,15 +37,19 @@ function topicsInSheet(sheet: SheetJS.WorkSheet) {
       topics[columnNum] = { title: cellContent, questions: {} };
     } else {
       const difficulty = parseInt(rowNum) - 1;
-      topics[columnNum].questions[difficulty] = cellContent;
+      topics[columnNum].questions[difficulty] = {
+        questionText: cellContent,
+        burnt: false,
+        difficulty: difficulty.toString(),
+      };
     }
   }
 
   return Object.values(topics);
 }
 
-export function parseXlsx(uploadedXlsxFile: Blob) {
+export function parseXlsx(uploadedXlsxFile: Blob): Topic[] {
   const xlsx = SheetJS.read(uploadedXlsxFile);
   const firstSheet = Object.values(xlsx.Sheets)[0];
-  return topicsInSheet(firstSheet);
+  return stateFromSheet(firstSheet);
 }
