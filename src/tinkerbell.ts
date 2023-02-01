@@ -5,26 +5,31 @@
  * https://github.com/tholman/cursor-effects/blob/433675ed6dfb865b3342e65622ff4ede37cae51b/src/fairyDustCursor.js
  */
 
-export function fairyDustCursor(options) {
+type Options = {
+  colors: string[];
+  element: HTMLElement;
+};
+
+export function fairyDustCursor(options: Options) {
   let possibleColors = (options && options.colors) || [
     "#2c88ad",
     "#5caaca",
     "#98d0e6",
   ];
   let hasWrapperEl = options && options.element;
-  let element = hasWrapperEl || document.documentElement;
+  let element: HTMLElement = hasWrapperEl || document.documentElement;
 
   let width = window.innerWidth;
   let height = window.innerHeight;
   const cursor = { x: width / 2, y: width / 2 };
   const lastPos = { x: width / 2, y: width / 2 };
   const particles = [];
-  const canvImages = [];
-  let canvas, context;
+  const canvImages: HTMLCanvasElement[] = [];
+  let canvas: HTMLCanvasElement, context: CanvasRenderingContext2D;
 
   const char = "+";
 
-  let previousTimeStamp;
+  let previousTimeStamp: number;
 
   function init() {
     canvas = document.createElement("canvas");
@@ -49,7 +54,7 @@ export function fairyDustCursor(options) {
     context.textBaseline = "middle";
     context.textAlign = "center";
 
-    possibleColors.forEach((color) => {
+    possibleColors.forEach((color: string | CanvasGradient | CanvasPattern) => {
       let measurements = context.measureText(char);
       let bgCanvas = document.createElement("canvas");
       let bgContext = bgCanvas.getContext("2d");
@@ -84,7 +89,7 @@ export function fairyDustCursor(options) {
     window.addEventListener("resize", onWindowResize);
   }
 
-  function onWindowResize(e) {
+  function onWindowResize() {
     width = window.innerWidth;
     height = window.innerHeight;
 
@@ -97,7 +102,7 @@ export function fairyDustCursor(options) {
     }
   }
 
-  function onTouchMove(e) {
+  function onTouchMove(e: TouchEvent) {
     if (e.touches.length > 0) {
       for (let i = 0; i < e.touches.length; i++) {
         addParticle(
@@ -109,7 +114,7 @@ export function fairyDustCursor(options) {
     }
   }
 
-  function onMouseMove(e) {
+  function onMouseMove(e: { clientX: number; clientY: number }) {
     window.requestAnimationFrame(() => {
       if (hasWrapperEl) {
         const boundingRect = element.getBoundingClientRect();
@@ -138,7 +143,7 @@ export function fairyDustCursor(options) {
     });
   }
 
-  function addParticle(x, y, color) {
+  function addParticle(x: number, y: number, color: HTMLCanvasElement) {
     particles.push(new Particle(x, y, color));
   }
 
@@ -158,7 +163,7 @@ export function fairyDustCursor(options) {
     }
   }
 
-  function loop(timestamp) {
+  function loop(timestamp?: number) {
     if (!previousTimeStamp || timestamp - previousTimeStamp > 40) {
       updateParticles();
       previousTimeStamp = timestamp;
@@ -166,7 +171,7 @@ export function fairyDustCursor(options) {
     requestAnimationFrame(loop);
   }
 
-  function Particle(x, y, canvasItem) {
+  function Particle(x: number, y: number, canvasItem: HTMLCanvasElement) {
     const lifeSpan = 20;
     this.initialLifeSpan = lifeSpan; //
     this.lifeSpan = lifeSpan; //ms
@@ -177,7 +182,7 @@ export function fairyDustCursor(options) {
     this.position = { x: x, y: y };
     this.canv = canvasItem;
 
-    this.update = function (context) {
+    this.update = function (context: CanvasRenderingContext2D) {
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
       this.lifeSpan--;
