@@ -4,7 +4,8 @@
   "description": "``` shell mkdir -p deps wget -O deps/xlsx.js 'https://cdn.sheetjs.com/xlsx-0.18.10/package/dist/xlsx.mini.min.js' wget -O deps/mithril.js 'https://esm.sh/v91/mithril@2.2.2/es2022/mithril.js' ```",
   "main": "index.js",
   "scripts": {
-    "watch": "pkill -f http.server; cd static && python -m http.server & esbuild --bundle src/index.tsx --outdir=static/js --sourcemap --minify --watch "
+    "build": "esbuild --bundle src/index.tsx --outdir=static/js --sourcemap --minify",
+    "watch": "npm run build -- --servedir=static"
   },
   "repository": {
     "type": "git",
