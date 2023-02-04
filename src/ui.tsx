@@ -52,7 +52,7 @@ export function IndexPage({ state, actions }: IndexPageProps) {
   );
 
   return (
-    <div className="index" style={style}>
+    <div id="index" style={style}>
       {...state.map((topic, index) => makeTopicComponent(topic, index))}
       {scores}
     </div>
@@ -68,17 +68,25 @@ type Actions = ReturnType<typeof makeActions>;
 
 type QuestionPageProps = {
   state: State;
-  question: QuestionId;
+  topicId: string;
+  difficulty: string;
 };
 
-export function QuestionPage({ state, question }: QuestionPageProps) {
+export function QuestionPage({
+  state,
+  topicId,
+  difficulty,
+}: QuestionPageProps) {
+  const difficultyNum = parseInt(difficulty);
+  const topicIdNum = parseInt(topicId);
   // if I don't put each line in its own div, they will appear on the same line
-  const lines = state[question.topicId].questions[question.difficulty]
+  const lines = state[topicIdNum].questions[difficultyNum].questionText
     .toString()
     .trim()
     .split("\n")
     .map((line) => <div>{line}</div>);
-  return <div class="question-page-text">{lines}</div>;
+  console.log(state[topicIdNum].questions[difficultyNum]);
+  return <div class="question-page-text">{...lines}</div>;
 }
 
 type TopicProps = {
