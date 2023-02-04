@@ -30,14 +30,16 @@ function stateFromSheet(sheet: SheetJS.WorkSheet): State {
 
     // columns are letters, used to identify topics
     // rows are numbers, represent difficulty
-    const [, columnLetter, rowNum] = k.match(/([A-Z]+?)([0-9]+)/)!;
+    const [, columnLetter, rowNumStr] = k.match(/([A-Z]+?)([0-9]+)/)!;
     const columnNum = columnLetter.charCodeAt(0) - 65;
 
     // first row contains topic titles
-    if (rowNum === "1") {
+    if (rowNumStr === "1") {
       state[columnNum] = { title: cellContent, questions: [] };
     } else {
-      const difficulty = parseInt(rowNum) - 1;
+      // subtracting 2 because the first row was the topic title, and SheetJS
+      // has 1-based index
+      const difficulty = parseInt(rowNumStr) - 2;
       state[columnNum].questions[difficulty] = {
         questionText: cellContent,
         burnt: false,
