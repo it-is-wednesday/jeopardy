@@ -4,7 +4,7 @@ import type { State, Topic } from "./index";
 type QuestionId = { topicId: number; difficulty: number };
 
 export function SplashPage() {
-  return <div className="splash-page" onClick={() => route("/index")}></div>;
+  return <div className="splash-page" onClick={() => route("/main")}></div>;
 }
 
 type IndexPageProps = {

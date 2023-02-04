@@ -1,8 +1,9 @@
 import { render } from "preact";
+import { useState } from "preact/hooks";
 import { Router, Route } from "preact-router";
-import { parseXlsx } from "./excel";
 import { fairyDustCursor } from "./tinkerbell";
 import { IndexPage, makeActions, QuestionPage, SplashPage } from "./ui";
+import { WelcomePage } from "./welcomePage";
 
 type Question = {
   questionText: string;
@@ -11,34 +12,34 @@ type Question = {
 
 export type Topic = {
   title: string;
-  // index represents difficulty
-  questions: Question[];
+  questions: Question[]; // the index number represents difficulty
 };
 
 export type State = Topic[];
 
 fairyDustCursor();
 
-const fileInput = document.getElementById("xlsx")! as HTMLInputElement;
-
-fileInput.addEventListener("change", async () => {
-  const uploadedFile = await fileInput.files![0].arrayBuffer();
-  const state = parseXlsx(uploadedFile);
+function Main() {
+  const [state, setState] = useState<State>([]);
   const actions = makeActions(state);
 
-  function Main() {
-    return (
-      <Router>
-        <Route path="/" component={IndexPage} state={state} actions={actions} />
-        <Route path="/splash" component={SplashPage} />
-        <Route
-          path="/q/:topicId/:difficulty"
-          component={QuestionPage}
-          state={state}
-        />
-      </Router>
-    );
-  }
+  return (
+    <Router>
+      <Route path="/" component={WelcomePage} setState={setState} />
+      <Route
+        path="/main"
+        component={IndexPage}
+        state={state}
+        actions={actions}
+      />
+      <Route path="/splash" component={SplashPage} />
+      <Route
+        path="/q/:topicId/:difficulty"
+        component={QuestionPage}
+        state={state}
+      />
+    </Router>
+  );
+}
 
-  render(<Main />, document.body);
-});
+render(<Main />, document.body);

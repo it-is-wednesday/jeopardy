@@ -37,6 +37,7 @@ function stateFromSheet(sheet: SheetJS.WorkSheet): State {
       state[parseInt(columnNum)] = { title: cellContent, questions: [] };
     } else {
       const difficulty = parseInt(rowNum) - 1;
+      console.log(columnNum)
       state[parseInt(columnNum)].questions[difficulty] = {
         questionText: cellContent,
         burnt: false,
