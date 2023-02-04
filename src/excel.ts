@@ -30,22 +30,22 @@ function stateFromSheet(sheet: SheetJS.WorkSheet): State {
 
     // columns are letters, used to identify topics
     // rows are numbers, represent difficulty
-    const [, columnNum, rowNum] = k.match(/([A-Z]+?)([0-9]+)/)!;
+    const [, columnLetter, rowNum] = k.match(/([A-Z]+?)([0-9]+)/)!;
+    const columnNum = columnLetter.charCodeAt(0) - 65;
 
     // first row contains topic titles
     if (rowNum === "1") {
-      state[parseInt(columnNum)] = { title: cellContent, questions: [] };
+      state[columnNum] = { title: cellContent, questions: [] };
     } else {
       const difficulty = parseInt(rowNum) - 1;
-      console.log(columnNum)
-      state[parseInt(columnNum)].questions[difficulty] = {
+      state[columnNum].questions[difficulty] = {
         questionText: cellContent,
         burnt: false,
       };
     }
   }
 
-  return Object.values(state);
+  return state;
 }
 
 export function parseXlsx(uploadedXlsxFile: ArrayBuffer): Topic[] {
