@@ -19,7 +19,7 @@ import type { State, Topic } from "./index";
  *   ]
  */
 function stateFromSheet(sheet: SheetJS.WorkSheet): State {
-  const topics: { [i: string]: Topic } = {};
+  const state: State = [];
 
   for (const k of Object.keys(sheet)) {
     if (k === "!ref" || k === "!margins") {
@@ -34,21 +34,20 @@ function stateFromSheet(sheet: SheetJS.WorkSheet): State {
 
     // first row contains topic titles
     if (rowNum === "1") {
-      topics[columnNum] = { title: cellContent, questions: {} };
+      state[parseInt(columnNum)] = { title: cellContent, questions: [] };
     } else {
       const difficulty = parseInt(rowNum) - 1;
-      topics[columnNum].questions[difficulty] = {
+      state[parseInt(columnNum)].questions[difficulty] = {
         questionText: cellContent,
         burnt: false,
-        difficulty: difficulty.toString(),
       };
     }
   }
 
-  return Object.values(topics);
+  return Object.values(state);
 }
 
-export function parseXlsx(uploadedXlsxFile: Blob): Topic[] {
+export function parseXlsx(uploadedXlsxFile: ArrayBuffer): Topic[] {
   const xlsx = SheetJS.read(uploadedXlsxFile);
   const firstSheet = Object.values(xlsx.Sheets)[0];
   return stateFromSheet(firstSheet);
