@@ -49,7 +49,7 @@ class Particle {
   }
 }
 
-export function fairyDustCursor(options?: Options) {
+export function startFairyDustCursor(options?: Options) {
   let possibleColors = (options && options.colors) || [
     "#2c88ad",
     "#5caaca",

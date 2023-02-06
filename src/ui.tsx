@@ -1,8 +1,7 @@
 import { route } from "preact-router";
-import type { State, Topic } from "./index";
+import type { State, Topic, Actions, QuestionId } from "./index";
 
-type QuestionId = { topicId: number; difficulty: number };
-
+/** Shows a big picture, should be shown when the crowd is gathering */
 export function SplashPage() {
   return <div className="splash-page" onClick={() => route("/main")}></div>;
 }
@@ -11,6 +10,16 @@ type IndexPageProps = {
   state: State;
   actions: Actions;
 };
+
+const difficulties = [
+  "בדיחה",
+  "קליל",
+  "קל",
+  "בינוני",
+  "קשה",
+  "קשה מאוד",
+  "קיצוני",
+];
 
 export function IndexPage({ state, actions }: IndexPageProps) {
   const numOfColumns = Object.keys(state).length;
@@ -58,13 +67,6 @@ export function IndexPage({ state, actions }: IndexPageProps) {
     </div>
   );
 }
-
-export const makeActions = (state: State) => ({
-  burn({ topicId, difficulty }: QuestionId) {
-    state[topicId].questions[difficulty].burnt = true;
-  },
-});
-type Actions = ReturnType<typeof makeActions>;
 
 type QuestionPageProps = {
   state: State;
@@ -116,16 +118,6 @@ function TopicComponent({ actions, title, topicId, questions }: TopicProps) {
     </>
   );
 }
-
-const difficulties = [
-  "בדיחה",
-  "קליל",
-  "קל",
-  "בינוני",
-  "קשה",
-  "קשה מאוד",
-  "קיצוני",
-];
 
 type QuestionButtonProps = {
   actions: Actions;

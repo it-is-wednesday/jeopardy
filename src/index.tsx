@@ -1,23 +1,32 @@
 import { render } from "preact";
 import { useState } from "preact/hooks";
 import { Router, Route } from "preact-router";
-import { fairyDustCursor } from "./tinkerbell";
-import { IndexPage, makeActions, QuestionPage, SplashPage } from "./ui";
+import { startFairyDustCursor } from "./tinkerbell";
+import { IndexPage, QuestionPage, SplashPage } from "./ui";
 import { WelcomePage } from "./welcomePage";
 
-type Question = {
-  questionText: string;
-  burnt: boolean;
-};
+startFairyDustCursor();
+
+export type QuestionId = { topicId: number; difficulty: number };
 
 export type Topic = {
   title: string;
-  questions: Question[]; // the index number represents difficulty
+  // the index number represents difficulty
+  questions: {
+    questionText: string;
+    burnt: boolean;
+  }[];
 };
 
 export type State = Topic[];
 
-fairyDustCursor();
+export type Actions = ReturnType<typeof makeActions>;
+
+export const makeActions = (state: State) => ({
+  burn({ topicId, difficulty }: QuestionId) {
+    state[topicId].questions[difficulty].burnt = true;
+  },
+});
 
 function Main() {
   const [state, setState] = useState<State>([]);
