@@ -1,5 +1,5 @@
 import * as SheetJS from "xlsx";
-import type { State, Topic } from "./index";
+import type { State } from "./index";
 
 /**
  * Turn Sheet into an array of topics with questions.
@@ -19,7 +19,7 @@ import type { State, Topic } from "./index";
  *   ]
  */
 function stateFromSheet(sheet: SheetJS.WorkSheet): State {
-  const state: State = [];
+  const state: State = {};
 
   for (const k of Object.keys(sheet)) {
     if (k === "!ref" || k === "!margins") {
@@ -35,7 +35,7 @@ function stateFromSheet(sheet: SheetJS.WorkSheet): State {
 
     // first row contains topic titles
     if (rowNumStr === "1") {
-      state[columnNum] = { title: cellContent, questions: [] };
+      state[columnNum] = { title: cellContent, questions: {} };
     } else {
       // subtracting 2 because the first row was the topic title, and SheetJS
       // has 1-based index
@@ -50,7 +50,7 @@ function stateFromSheet(sheet: SheetJS.WorkSheet): State {
   return state;
 }
 
-export function parseXlsx(uploadedXlsxFile: ArrayBuffer): Topic[] {
+export function parseXlsx(uploadedXlsxFile: ArrayBuffer): State {
   const xlsx = SheetJS.read(uploadedXlsxFile);
   const firstSheet = Object.values(xlsx.Sheets)[0];
   return stateFromSheet(firstSheet);

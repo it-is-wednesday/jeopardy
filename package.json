@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/it-is-wednesday/jeopardy#readme",
   "dependencies": {
+    "immer": "^9.0.19",
     "preact": "^10.11.3",
     "preact-router": "^4.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.2/xlsx-0.19.2.tgz"

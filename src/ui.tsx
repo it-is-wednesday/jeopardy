@@ -1,5 +1,5 @@
 import { route } from "preact-router";
-import type { State, Topic, Actions, QuestionId } from "./index";
+import type { State, Topic, QuestionId } from "./index";
 
 /** Shows a big picture, should be shown when the crowd is gathering */
 export function SplashPage() {
@@ -8,7 +8,7 @@ export function SplashPage() {
 
 type IndexPageProps = {
   state: State;
-  actions: Actions;
+  burn: (q: QuestionId) => void;
 };
 
 const difficulties = [
@@ -21,7 +21,7 @@ const difficulties = [
   "קיצוני",
 ];
 
-export function IndexPage({ state, actions }: IndexPageProps) {
+export function IndexPage({ state, burn }: IndexPageProps) {
   const numOfColumns = Object.keys(state).length;
   // assuming here that we're well behaved and that all columns have the same
   // amount of rows
@@ -35,13 +35,17 @@ export function IndexPage({ state, actions }: IndexPageProps) {
     gridTemplateRows: `1fr 0.15fr repeat(${numOfRows}, 1fr)`,
   };
 
-  const makeTopicComponent = ({ title, questions }: Topic, topicId: number) => (
+  const makeTopicComponent = (topicId: number, { title, questions }: Topic) => (
     <TopicComponent
-      actions={actions}
+      burn={burn}
       title={title}
       topicId={topicId}
       questions={questions}
     ></TopicComponent>
+  );
+
+  const topics = Object.entries(state).map(([topicId, index]) =>
+    makeTopicComponent(parseInt(topicId), index)
   );
 
   // These are the 100, 200, 300... on the right side
@@ -62,7 +66,7 @@ export function IndexPage({ state, actions }: IndexPageProps) {
 
   return (
     <div id="index" style={style}>
-      {...state.map((topic, index) => makeTopicComponent(topic, index))}
+      {...topics}
       {scores}
     </div>
   );
@@ -92,20 +96,20 @@ export function QuestionPage({
 }
 
 type TopicProps = {
-  actions: Actions;
+  burn: (q: QuestionId) => void;
   title: string;
   topicId: number;
   questions: Topic["questions"];
 };
 
 /** A column of questions in index page, with the topic title as the first row. */
-function TopicComponent({ actions, title, topicId, questions }: TopicProps) {
-  const buttons = questions.map((question, difficulty) => {
+function TopicComponent({ burn, title, topicId, questions }: TopicProps) {
+  const buttons = Object.entries(questions).map(([difficulty, question]) => {
     return (
       <QuestionButton
-        actions={actions}
+        burn={burn}
         burnt={question.burnt}
-        question={{ difficulty, topicId }}
+        question={{ difficulty: parseInt(difficulty), topicId }}
       ></QuestionButton>
     );
   });
@@ -120,16 +124,16 @@ function TopicComponent({ actions, title, topicId, questions }: TopicProps) {
 }
 
 type QuestionButtonProps = {
-  actions: Actions;
+  burn: (q: QuestionId) => void;
   burnt: boolean;
   question: QuestionId;
 };
 
-function QuestionButton({ actions, burnt, question }: QuestionButtonProps) {
+function QuestionButton({ burn, burnt, question }: QuestionButtonProps) {
   const burntClass = burnt ? "burnt" : null;
   const classes = `index-button question glow-on-hover ${burntClass}`;
   const onClick = () => {
-    actions.burn(question);
+    burn(question);
     route(`/q/${question.topicId}/${question.difficulty}`);
   };
   return (
