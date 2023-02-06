@@ -27,7 +27,7 @@ export function WelcomePage({ setState }: Props) {
         <ol>
           <li>
             תעלו קובץ אקסל עם שאלות,
-            <a href="./example.xlsx">הנה אחד לדוגמה</a>
+            <a href="./example.xlsx"> הנה אחד לדוגמה </a>
             שתדעו איך המבנה אמור להראות וזה
           </li>
           <li>

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild --bundle src/index.tsx --outdir=static/js --sourcemap --minify",
-    "watch": "npm run build -- --servedir=static"
+    "watch": "npm run build -- --servedir=static",
+    "publish": "npm run build && npx dotenv-cli -- sh -c 'rsync -av --delete static/ $JEOPARDY_PUBLISH_TARGET'"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.2/xlsx-0.19.2.tgz"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.0.0",
     "esbuild": "^0.15.18",
     "typescript": "^4.9.3"
   },
