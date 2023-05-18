@@ -53,12 +53,12 @@ export function IndexPage({ state, burn }: IndexPageProps) {
     <>
       <div></div>
       <div></div>
-      {...Object.keys(difficulties)
+      {...difficulties
         .slice(0, numOfRows)
-        .map((num) => (
+        .map((_, i) => (
           <div className="score">
             <div className="shekel">₪</div>
-            <div>{`${num}00`}</div>
+            <div>{`${i + 1}00`}</div>
           </div>
         ))}
     </>
